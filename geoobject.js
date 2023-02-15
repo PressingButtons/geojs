@@ -19,8 +19,8 @@ export default class GeoObject {
     }
 
     setValue(...params) {
-        if(params[0] instanceof GeoObject) return this.setValue(...params[0].value);
-        this.#data.set(params);
+        if(params[0] instanceof GeoObject) return this.setValue(...params[0].value.slice(0, this.#data.length));
+        this.#data.set(params.slice(0, this.#data.length));
         return this;
     }
 
