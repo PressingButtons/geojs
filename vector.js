@@ -1,28 +1,16 @@
-const vec3 = window.glMatirx.vec3 || window.vec3; //have glmatrix
+import GeoObject from "./geoobject.js";
 
-export default class Vector {
-
-    #data = new Float32Array(3);
+export default class Vector extends GeoObject {
 
     constructor(x = 0, y = 0, z = 0) {
-        if(x instanceof Number) this.#data.set([x, y, z]);
-        else if(x instanceof Vector) this.#data.set(x.xyz);        
+        super({params: ['x', 'y', 'z']});
+        if(x instanceof GeoObject) return this.setValue(x);
+        this.setValue(x, y, z);
     }
 
-    get x( ) {return this.#data[0]}
-    set x(n) {this.#data[0] = n}
+    get xy( ) {return [this.x, this.y]}
 
-    get y( ) {return this.#data[1]}
-    set y(n) {this.#data[1] = n}
-
-    get z( ) {return this.#data[2]}
-    set z(n) {this.#data[1] = n}
-
-    get xy( ) {return this.#data.subarray(0, 3)}
-    set xy(n) {this.#data.set(n.slice(0, 3))}
-
-    get xyz( ) {return this.#data}
-    set xyz(n) {this.#data.set(n)}
+    get xyz( ) {return this.value}
 
     get magnitude( ) {
         const x_sq = this.x * this.x;
@@ -34,15 +22,20 @@ export default class Vector {
     get angle( ) {
         return Math.atan2(this.y, this.z);
     }
-
     add( x = 0, y = 0, z = 0) {
         if(x instanceof Vector) return this.add(...x.xyz);
-        this.x += x; this.y += y; this.z += z;
+        this.x += x;
+        this.y += y;
+        this.z += z;
+        return this;
     }
 
     subtract(x = 0, y = 0, z = 0) {
         if(x instanceof Vector) return this.subtract(...x.xyz);
-        this.x -= x; this.y -= y; this.z -= z;
+        this.x -= x;
+        this.y -= y;
+        this.z -= z;
+        return this;
     }
 
     dot(vector) {
@@ -55,12 +48,34 @@ export default class Vector {
         return Math.acos(Math.min(Math.max(cosine, -1), 1));
     }
 
-    scalarMultiplication(n) {
+    divide(x, y, z) {
+        if(x instanceof Vector) return this.divide(...x.xyz)
+        this.x /= x;
+        this.y /= y;
+        this.z /= z;
+        return this;
+    }
+
+    divideScalar(n) {
+        this.x /= n;
+        this.y /= n;
+        this.z /= n;
+        return this;
+    }
+
+    multiply(x, y, z) {
+        if(x instanceof Vector) return this.multiply(...x.xyz);
+        this.x *= x;
+        this.y *= y;
+        this.z *= z;
+        return this;
+    }
+
+    multiplyScalar(n) {
         this.x *= n;
         this.y *= n;
         this.z *= n;
+        return this;
     }
-
-
 
 }
